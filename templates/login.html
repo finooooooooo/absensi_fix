@@ -1,31 +1,27 @@
 {% extends "base.html" %}
-
 {% block content %}
-<div class="container d-flex flex-column justify-content-center align-items-center min-vh-100">
-    <div class="card card-glass p-4 w-100" style="max-width: 400px;">
+<style>
+    .btn-wine { background: #722F37; color: white; border: none; }
+    .btn-wine:hover { background: #5a252b; color: white; }
+    .card-glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
+</style>
+<div class="container d-flex align-items-center justify-content-center vh-100">
+    <div class="card card-glass p-4 w-100 shadow" style="max-width: 400px; border-radius: 20px; border: none;">
         <div class="text-center mb-4">
-            <h2 class="fw-bold text-wine mb-0">Wine Dental</h2>
-            <p class="text-muted text-gold">Aesthetic & Care</p>
+            <h3 class="fw-bold mb-0" style="color: #722F37;">WINE DENTAL</h3>
+            <p class="text-muted small">Aesthetic & Care Portal</p>
         </div>
-
-        {% if error %}
-        <div class="alert alert-danger py-2 text-center" role="alert">
-            {{ error }}
-        </div>
-        {% endif %}
-
-        <form method="POST" action="{{ url_for('login') }}">
+        <form method="POST">
             <div class="mb-3">
-                <label for="username" class="form-label text-muted small">Username</label>
-                <input type="text" class="form-control" id="username" name="username" required>
+                <label class="small text-muted mb-1">Username</label>
+                <input type="text" name="username" class="form-control py-2 border-0 bg-light" placeholder="Masukkan username" required>
             </div>
             <div class="mb-4">
-                <label for="password" class="form-label text-muted small">Password</label>
-                <input type="password" class="form-control" id="password" name="password" required>
+                <label class="small text-muted mb-1">Password</label>
+                <input type="password" name="password" class="form-control py-2 border-0 bg-light" placeholder="Masukkan password" required>
             </div>
-            <button type="submit" class="btn btn-wine w-100 shadow-sm">Sign In</button>
+            <button type="submit" class="btn btn-wine w-100 py-2 fw-bold rounded-3 shadow">SIGN IN</button>
         </form>
     </div>
-    <p class="mt-4 text-muted small">&copy; 2024 Wine Dental Aesthetic</p>
 </div>
 {% endblock %}
