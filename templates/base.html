@@ -3,20 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wine Dental Aesthetic</title>
+    <title>Wine Dental Aesthetic - HRIS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        :root { --wine: #722F37; }
-        body { background: #f4f7f6; font-family: 'Segoe UI', sans-serif; }
-        .bg-wine { background: var(--wine); color: white; }
+        :root { --wine: #722F37; --bg: #F4F7F6; }
+        body { background: var(--bg); font-family: 'Inter', system-ui, sans-serif; padding-bottom: 80px; }
         .text-wine { color: var(--wine); }
-        .card-glass { background: white; border-radius: 15px; border: none; box-shadow: 0 8px 30px rgba(0,0,0,0.05); }
-        .btn-wine { background: var(--wine); color: white; border-radius: 10px; font-weight: 600; }
+        .btn-wine { background: var(--wine); color: white; border-radius: 12px; transition: 0.3s; }
+        .btn-wine:hover { background: #5a252b; color: white; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(114, 47, 55, 0.4); }
+        .card-glass { background: rgba(255,255,255,0.95); border-radius: 20px; border: none; box-shadow: 0 8px 30px rgba(0,0,0,0.05); backdrop-filter: blur(10px); }
+        .letter-spacing-1 { letter-spacing: 1px; }
     </style>
 </head>
 <body>
     {% block content %}{% endblock %}
+
+    <div class="modal fade" id="photoModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow-lg">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold text-wine" id="photoTitle">Bukti Absensi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center p-4">
+                    <img id="modalImage" src="" class="img-fluid rounded-4 shadow-sm w-100" style="object-fit: cover; max-height: 400px;">
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showPhoto(src, title) {
+            document.getElementById('modalImage').src = src;
+            document.getElementById('photoTitle').innerText = title;
+            new bootstrap.Modal(document.getElementById('photoModal')).show();
+        }
+    </script>
+    {% block scripts %}{% endblock %}
 </body>
 </html>

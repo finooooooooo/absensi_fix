@@ -1,43 +1,42 @@
 {% extends "base.html" %}
+
 {% block content %}
 <style>
-    :root { --wine: #722F37; --bg: #F4F7F6; }
-    body { background: var(--bg); padding-bottom: 100px; font-family: 'Inter', sans-serif; }
-    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #eee; z-index: 1050; }
-    .nav-item { text-align: center; color: #bbb; text-decoration: none; font-size: 10px; flex: 1; cursor: pointer; }
-    .nav-item.active { color: var(--wine); font-weight: bold; }
-    .nav-item i { display: block; font-size: 20px; margin-bottom: 2px; }
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #eee; z-index: 1050; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); padding-bottom: max(12px, env(safe-area-inset-bottom)); }
+    .nav-item { text-align: center; color: #bbb; text-decoration: none; font-size: 11px; flex: 1; cursor: pointer; border: none; background: none; transition: 0.2s; }
+    .nav-item.active { color: var(--wine); font-weight: bold; transform: translateY(-2px); }
+    .nav-item i { display: block; font-size: 20px; margin-bottom: 4px; }
+
     .view-section { display: none; }
-    .view-section.active { display: block; animation: fadeIn 0.3s ease-in-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .view-section.active { display: block; animation: fadeIn 0.4s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Siluet Biometrik */
-    .camera-box { position: relative; width: 100%; max-width: 400px; aspect-ratio: 3/4; margin: auto; border-radius: 25px; overflow: hidden; background: #000; border: 4px solid #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+    .camera-box { position: relative; width: 100%; max-width: 400px; aspect-ratio: 3/4; margin: auto; border-radius: 25px; overflow: hidden; background: #111; border: 4px solid #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
     video#video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
-    .silhouette-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; stroke: rgba(255,255,255,0.7); stroke-width: 2.5; fill: none; stroke-dasharray: 10; pointer-events: none; }
+    .silhouette-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; stroke: rgba(255,255,255,0.6); stroke-width: 2.5; fill: none; stroke-dasharray: 8; pointer-events: none; }
     
-    /* TOMBOL UTAMA */
-    .btn-clock { width: 100%; padding: 18px; border-radius: 15px; font-weight: 800; border: none; transition: 0.3s; margin-top: 10px; letter-spacing: 1px; font-size: 1.1rem; }
-    .btn-in { background: var(--wine); color: white; box-shadow: 0 4px 15px rgba(114, 47, 55, 0.3); }
+    .btn-clock { width: 100%; padding: 18px; border-radius: 15px; font-weight: 800; border: none; transition: 0.2s; margin-top: 10px; letter-spacing: 1px; font-size: 1.1rem; }
+    .btn-in { background: var(--wine); color: white; box-shadow: 0 8px 20px rgba(114, 47, 55, 0.3); }
     .btn-out { background: #fff; color: var(--wine); border: 2px solid var(--wine); }
-    .btn-clock:active { transform: scale(0.95); }
+    .btn-clock:active { transform: scale(0.97); }
 
-    .card-talenta { border-radius: 20px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.04); background: white; margin-bottom: 12px; }
+    .card-talenta { border-radius: 18px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.03); background: white; margin-bottom: 15px; }
+    .badge-time { font-size: 0.7rem; padding: 4px 10px; border-radius: 8px; position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.7); color: white; backdrop-filter: blur(4px); font-weight: bold; }
 </style>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<nav class="navbar bg-white border-bottom sticky-top py-2 shadow-sm">
+<nav class="navbar bg-white border-bottom sticky-top py-3 shadow-sm">
     <div class="container d-flex justify-content-between align-items-center">
-        <span class="navbar-brand fw-bold text-wine">WINE<span class="text-dark">DENTAL</span></span>
-        <div class="bg-wine text-white rounded-circle text-center fw-bold" style="width: 35px; height: 35px; line-height: 35px; font-size: 14px;">{{ user.full_name[0] }}</div>
+        <span class="navbar-brand fw-bold text-wine m-0 letter-spacing-1">WINE<span class="text-dark">DENTAL</span></span>
+        <div class="bg-wine text-white rounded-circle text-center fw-bold shadow-sm" style="width: 40px; height: 40px; line-height: 40px; font-size: 16px;">
+            {{ user.full_name[0] | upper }}
+        </div>
     </div>
 </nav>
 
-<div class="container py-3">
+<div class="container py-4">
     <div id="view-home" class="view-section active text-center">
-        <h5 class="fw-bold mb-0">Halo, {{ user.full_name }}</h5>
-        <p class="text-muted small mb-4">{{ now_date }} • {{ user.role }}</p>
+        <h4 class="fw-bold mb-1">Halo, {{ user.full_name }}</h4>
+        <p class="text-muted small mb-4 fw-medium"><i class="far fa-calendar-alt me-1"></i> {{ now_date }} • <span class="badge bg-secondary">{{ user.role }}</span></p>
 
         {% if user.role != 'OWNER' %}
         <div class="card card-talenta p-4">
@@ -48,103 +47,209 @@
                         <path d="M50,12 A18,22 0 1,1 50,56 A18,22 0 1,1 50,12 Z M15,95 C15,75 35,62 50,62 C65,62 85,75 85,95" />
                     </svg>
                 </div>
-                <p class="small text-muted mt-2">Posisikan wajah & bahu sesuai garis.</p>
+                <p class="small text-muted mt-3 fw-medium"><i class="fas fa-expand me-1"></i> Sejajarkan wajah pada area garis biometrik.</p>
             </div>
 
             <div id="ui-main">
-                <h1 class="fw-bold display-4 mb-4" id="live-time" style="color: var(--wine);">00:00</h1>
+                <h1 class="fw-bold display-3 mb-4 text-wine" id="live-time" style="font-variant-numeric: tabular-nums;">00:00</h1>
                 
                 {% if not att %}
-                    <button onclick="startAbsen()" class="btn btn-clock btn-in shadow">CLOCK IN</button>
+                    <button onclick="startAbsen()" class="btn btn-clock btn-in"><i class="fas fa-fingerprint me-2"></i> CLOCK IN</button>
                 {% elif not att.out_time %}
-                    <button onclick="startAbsen()" class="btn btn-clock btn-out shadow">CLOCK OUT</button>
-                    <div class="alert alert-success mt-3 rounded-4 small py-2">
-                        Masuk pukul: <b>{{ att.in_time.strftime('%H:%M') }}</b>
+                    <button onclick="startAbsen()" class="btn btn-clock btn-out"><i class="fas fa-sign-out-alt me-2"></i> CLOCK OUT</button>
+                    <div class="alert alert-success mt-4 rounded-4 small py-3 border-0 text-start shadow-sm fw-medium">
+                        <i class="fas fa-check-circle me-2 text-success" style="font-size:1.2rem; vertical-align:middle;"></i> 
+                        Terabsen masuk pada <b>{{ att.in_time.strftime('%H:%M') }}</b> WIB
                     </div>
                 {% else %}
-                    <div class="alert alert-dark mt-3 rounded-4 small py-3">
-                        Shift Hari ini Selesai. Selamat Istirahat!
+                    <div class="alert alert-secondary mt-3 rounded-4 small py-4 border-0 shadow-sm">
+                        <i class="fas fa-moon mb-2 text-muted" style="font-size: 2rem; display:block;"></i> 
+                        <span class="fw-bold d-block mb-1">Shift Selesai</span>
+                        Selamat beristirahat.
                     </div>
                 {% endif %}
             </div>
         </div>
         {% else %}
-        <div class="alert alert-info rounded-4 border-0">
-            <i class="fas fa-info-circle me-2"></i>Mode Owner: Silakan pantau tim di menu Team.
+        <div class="alert alert-info rounded-4 border-0 p-4 shadow-sm">
+            <i class="fas fa-chart-line mb-3 text-info" style="font-size: 2.5rem; display:block;"></i>
+            <h6 class="fw-bold">Mode Pengawasan Aktif</h6>
+            <p class="small text-muted mb-0">Pantau operasional dan aktivitas tim melalui tab <b>Team</b> dan <b>Staff</b> di bawah.</p>
         </div>
         {% endif %}
     </div>
 
     <div id="view-team" class="view-section">
-        <h6 class="fw-bold mb-3 small text-muted px-2 uppercase">Live Team Activity</h6>
-        <div class="row g-2">
+        <h6 class="fw-bold mb-3 small text-muted px-2 text-uppercase letter-spacing-1">Aktivitas Hari Ini</h6>
+        <div class="row g-3">
             {% for log in team_attendance %}
-            <div class="col-6 col-md-4 mb-2">
-                <div class="card card-talenta overflow-hidden border-0">
-                    <img src="/static/uploads/presensi/{{ log.in_photo }}" class="w-100" style="aspect-ratio:1/1; object-fit:cover;" onclick="Swal.fire({imageUrl: this.src, showConfirmButton: false})">
-                    <div class="p-2 text-center bg-white">
-                        <strong class="small d-block text-truncate">{{ log.user.full_name }}</strong>
-                        <small class="text-muted" style="font-size: 10px;">{{ log.in_time.strftime('%H:%M') }}</small>
+            <div class="col-6 col-md-4">
+                <div class="card card-talenta overflow-hidden h-100">
+                    <div class="position-relative">
+                        <img src="{{ url_for('static', filename='uploads/presensi/' + log.in_photo) }}" class="w-100" style="aspect-ratio:1/1; object-fit:cover; cursor:pointer;" 
+                             onerror="this.src='https://placehold.co/400x400?text=Error'"
+                             onclick="showPhoto(this.src, 'Clock IN: {{ log.user.full_name }}')">
+                        <span class="badge-time"><i class="fas fa-sign-in-alt me-1"></i> {{ log.in_time.strftime('%H:%M') }}</span>
+                    </div>
+                    
+                    <div class="p-3 bg-white">
+                        <strong class="small d-block text-truncate mb-2">{{ log.user.full_name }}</strong>
+                        {% if log.out_photo %}
+                        <button class="btn btn-sm w-100 py-1 rounded-3" style="font-size: 0.7rem; background: #f8f9fa; border: 1px solid #dee2e6; color:var(--wine); font-weight:bold;"
+                                onclick="showPhoto('{{ url_for('static', filename='uploads/presensi/' + log.out_photo) }}', 'Clock OUT: {{ log.user.full_name }}')">
+                            <i class="fas fa-image me-1"></i> OUT: {{ log.out_time.strftime('%H:%M') }}
+                        </button>
+                        {% else %}
+                        <div class="text-center py-1 rounded-3" style="font-size: 0.7rem; background: #eef2f5; color: #6c757d;">
+                            <i class="fas fa-briefcase me-1"></i> Sedang Bekerja
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
             {% endfor %}
+            
             {% if not team_attendance %}
-            <div class="text-center py-5 text-muted">Belum ada aktivitas hari ini.</div>
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="fas fa-mug-hot text-muted opacity-50 mb-3" style="font-size: 3rem;"></i>
+                    <p class="text-muted small fw-medium">Belum ada aktivitas absensi hari ini.</p>
+                </div>
+            </div>
             {% endif %}
         </div>
     </div>
 
     <div id="view-accounts" class="view-section">
-        <div class="d-flex justify-content-between align-items-center mb-3 px-2">
-            <h6 class="fw-bold mb-0 small text-muted uppercase">Daftar Karyawan</h6>
-            <button class="btn btn-sm bg-wine text-white px-3 rounded-pill shadow-sm" data-bs-toggle="modal" data-bs-target="#modalAdd">+ Add</button>
-        </div>
-        {% for s in staff_list %}
-        <div class="card card-talenta p-3 small shadow-sm">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <strong class="d-block">{{ s.full_name }}</strong>
-                    <span class="text-muted">{{ s.id }} • {{ s.role }}</span>
-                </div>
-                <div class="text-wine fw-bold small text-uppercase">{{ s.branch.name if s.branch else 'Mgmt' }}</div>
+        <div class="d-flex justify-content-between align-items-center mb-4 px-2">
+            <h6 class="fw-bold mb-0 small text-muted text-uppercase letter-spacing-1">Manajemen Tim</h6>
+            <div>
+                <a href="/api/export_excel" class="btn btn-sm btn-success px-3 rounded-pill shadow-sm fw-bold me-1">
+                    <i class="fas fa-file-excel me-1"></i> Excel
+                </a>
+                
+                {% if user.role in ['OWNER', 'MANAGER'] %}
+                <button class="btn btn-sm btn-wine px-3 rounded-pill shadow-sm fw-bold" data-bs-toggle="modal" data-bs-target="#modalAdd">
+                    <i class="fas fa-plus"></i> Staf
+                </button>
+                {% endif %}
             </div>
         </div>
+
+        {% if user.role in ['OWNER', 'MANAGER', 'SPV'] %}
+        <button onclick="forceEndShift()" class="btn btn-outline-dark w-100 mb-4 py-2 rounded-3 fw-bold shadow-sm" style="font-size: 0.85rem;">
+            <i class="fas fa-stopwatch me-1"></i> AKHIRI SEMUA SHIFT HARI INI
+        </button>
+        {% endif %}
+        
+        {% for s in staff_list %}
+        <div class="card card-talenta p-3 shadow-sm mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <div class="bg-light rounded-circle text-center fw-bold text-wine me-3" style="width: 40px; height: 40px; line-height: 40px;">
+                        {{ s.full_name[0] | upper }}
+                    </div>
+                    <div>
+                        <strong class="d-block mb-1">{{ s.full_name }}</strong>
+                        <span class="badge bg-light text-dark border me-1">{{ s.id }}</span>
+                        <span class="badge {% if s.role == 'MANAGER' %}bg-primary{% elif s.role == 'SPV' %}bg-warning text-dark{% else %}bg-secondary{% endif %}">{{ s.role }}</span>
+                    </div>
+                </div>
+                
+                <div class="text-end">
+                    <div class="text-muted small text-uppercase mb-2" style="font-size: 0.65rem; font-weight:bold;">
+                        {{ s.branch.name if s.branch else 'PUSAT' }}
+                    </div>
+                    {% if user.role in ['OWNER', 'MANAGER'] %}
+                    <button onclick="kickUser('{{ s.id }}', '{{ s.full_name }}')" class="btn btn-sm btn-danger py-0 px-2 rounded-2" title="Hapus Akun">
+                        <i class="fas fa-trash-alt" style="font-size: 0.7rem;"></i>
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="text-center py-5 text-muted small">Belum ada data staf terdaftar di area pengawasan Anda.</div>
         {% endfor %}
     </div>
 </div>
 
 <div class="bottom-nav">
     <div class="nav-item active" onclick="switchView('home', this)"><i class="fas fa-home"></i>Home</div>
-    <div class="nav-item" onclick="switchView('team', this)"><i class="fas fa-camera"></i>Team</div>
+    
+    {% if user.role != 'STAFF' %}
+    <div class="nav-item" onclick="switchView('team', this)"><i class="fas fa-video"></i>Aktivitas</div>
+    {% endif %}
+    
     {% if user.role in ['OWNER', 'MANAGER', 'SPV'] %}
     <div class="nav-item" onclick="switchView('accounts', this)"><i class="fas fa-users-cog"></i>Staff</div>
     {% endif %}
-    <a href="/logout" class="nav-item text-danger text-decoration-none"><i class="fas fa-power-off"></i>Exit</a>
+    
+    <a href="/logout" class="nav-item text-danger text-decoration-none" onclick="return confirm('Yakin ingin keluar dari sistem?')">
+        <i class="fas fa-power-off"></i>Exit
+    </a>
 </div>
 
-<div class="modal fade" id="modalAdd" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content p-4 rounded-4 border-0 shadow">
-    <form action="/api/create_user" method="POST">
-        <h6 class="fw-bold text-wine mb-3">Registrasi Karyawan</h6>
-        <select name="role" id="roleSelect" class="form-select bg-light border-0 mb-3" onchange="toggleBranch()" required>
-            <option value="STAFF">Staff</option><option value="SPV">Supervisor</option>
-            {% if user.role == 'OWNER' %}<option value="MANAGER">Manager</option>{% endif %}
-        </select>
-        <div id="branchDiv" class="mb-3">
-            <select name="branch_id" class="form-select bg-light border-0">
-                {% for b in branches %}<option value="{{ b.id }}">{{ b.name }}</option>{% endfor %}
-            </select>
+<div class="modal fade" id="modalAdd" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 p-4 shadow-lg">
+            <form action="/api/create_user" method="POST">
+                <div class="text-center mb-4">
+                    <div class="bg-wine text-white rounded-circle d-inline-block mb-3" style="width: 50px; height: 50px; line-height: 50px; font-size: 20px;">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <h5 class="fw-bold text-wine mb-0">Registrasi Karyawan</h5>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="small text-muted fw-bold mb-1">Posisi / Jabatan</label>
+                    <select name="role" id="roleSelect" class="form-select bg-light border-0 p-3 rounded-3" onchange="toggleBranch()" required>
+                        <option value="STAFF" selected>Staff Cabang</option>
+                        <option value="SPV">Supervisor Cabang</option>
+                        {% if user.role == 'OWNER' %}
+                        <option value="MANAGER">Manager Global</option>
+                        {% endif %}
+                    </select>
+                </div>
+                
+                <div id="branchDiv" class="mb-3">
+                    <label class="small text-muted fw-bold mb-1">Penempatan Cabang</label>
+                    <select name="branch_id" class="form-select bg-light border-0 p-3 rounded-3">
+                        {% for b in branches %}
+                        <option value="{{ b.id }}">{{ b.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="small text-muted fw-bold mb-1">Nama Lengkap</label>
+                    <input type="text" name="full_name" class="form-control bg-light border-0 p-3 rounded-3" placeholder="Sesuai KTP" required autocomplete="off">
+                </div>
+                
+                <div class="mb-3">
+                    <label class="small text-muted fw-bold mb-1">Username Login</label>
+                    <input type="text" name="username" class="form-control bg-light border-0 p-3 rounded-3" placeholder="tanpa spasi" required autocomplete="off">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="small text-muted fw-bold mb-1">Password Sementara</label>
+                    <input type="password" name="password" class="form-control bg-light border-0 p-3 rounded-3" placeholder="Minimal 6 karakter" required>
+                </div>
+                
+                <button type="submit" class="btn btn-wine w-100 py-3 fw-bold rounded-3 text-uppercase letter-spacing-1 shadow-sm">Simpan Data</button>
+            </form>
         </div>
-        <input type="text" name="full_name" class="form-control bg-light border-0 mb-2" placeholder="Nama Lengkap" required>
-        <input type="text" name="username" class="form-control bg-light border-0 mb-2" placeholder="Username" required>
-        <input type="password" name="password" class="form-control bg-light border-0 mb-4" placeholder="Password" required>
-        <button type="submit" class="btn bg-wine text-white w-100 py-3 fw-bold rounded-3 shadow">REGISTER & SAVE</button>
-    </form>
-</div></div></div>
+    </div>
+</div>
+{% endblock %}
 
+{% block scripts %}
 <script>
-    const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 });
-
+    function toggleBranch() { 
+        const role = document.getElementById('roleSelect').value;
+        document.getElementById('branchDiv').style.display = (role === 'MANAGER') ? 'none' : 'block'; 
+    }
+    
     function switchView(viewId, el) {
         document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
         document.getElementById('view-' + viewId).classList.add('active');
@@ -154,23 +259,47 @@
 
     function updateClock() {
         const now = new Date();
-        document.getElementById('live-time').innerText = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+        document.getElementById('live-time').innerText = 
+            now.getHours().toString().padStart(2, '0') + ":" + 
+            now.getMinutes().toString().padStart(2, '0');
     }
     setInterval(updateClock, 1000); updateClock();
 
     async function startAbsen() {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            Swal.fire('Browser Tidak Mendukung', 'Gunakan browser Safari/Chrome terbaru.', 'error');
+            return;
+        }
+
         document.getElementById('camera-section').style.display = 'block';
         document.getElementById('ui-main').style.display = 'none';
+        
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+            const stream = await navigator.mediaDevices.getUserMedia({ 
+                video: { facingMode: 'user', width: { ideal: 720 }, height: { ideal: 1280 } } 
+            });
             document.getElementById('video').srcObject = stream;
-            Toast.fire({ icon: 'info', title: 'Siapkan wajah dalam bingkai...' });
             
-            // Auto capture setelah 5 detik agar staff bisa berpose
-            setTimeout(capture, 5000); 
+            let timerInterval;
+            Swal.fire({ 
+                title: 'Bersiap...', 
+                html: 'Kamera akan memotret dalam <b></b> detik.',
+                timer: 3000, 
+                timerProgressBar: true,
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                    const timer = Swal.getPopup().querySelector('b');
+                    timerInterval = setInterval(() => { timer.textContent = Math.ceil(Swal.getTimerLeft() / 1000) }, 100);
+                },
+                willClose: () => { clearInterval(timerInterval); }
+            }).then(() => {
+                capture();
+            });
         } catch (err) { 
-            Swal.fire('Error', 'Izin kamera ditolak!', 'error'); 
-            location.reload();
+            console.error(err);
+            Swal.fire('Akses Ditolak', 'Harap izinkan akses kamera di pengaturan browser Anda.', 'error').then(() => location.reload()); 
         }
     }
 
@@ -179,10 +308,21 @@
         const canvas = document.createElement('canvas');
         canvas.width = video.videoWidth; 
         canvas.height = video.videoHeight;
-        canvas.getContext('2d').drawImage(video, 0, 0);
+        
+        const ctx = canvas.getContext('2d');
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+        ctx.drawImage(video, 0, 0);
         
         video.srcObject.getTracks().forEach(t => t.stop());
-        const photoData = canvas.toDataURL('image/jpeg');
+        const photoData = canvas.toDataURL('image/jpeg', 0.8);
+        
+        Swal.fire({
+            title: 'Memproses Absensi...',
+            text: 'Menganalisa dan mengunggah data biometrik.',
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
 
         fetch('/api/absen', { 
             method: 'POST', 
@@ -192,15 +332,62 @@
         .then(res => res.json())
         .then(data => {
             if(data.success) {
-                Swal.fire('Berhasil!', data.message, 'success').then(() => location.reload());
+                Swal.fire({icon: 'success', title: 'Berhasil!', text: data.message, confirmButtonColor: '#722F37'}).then(() => location.reload());
             } else {
-                Swal.fire('Gagal!', data.error, 'error').then(() => location.reload());
+                Swal.fire({icon: 'error', title: 'Gagal', text: data.error, confirmButtonColor: '#722F37'}).then(() => location.reload());
             }
+        })
+        .catch(error => {
+            Swal.fire('Network Error', 'Gagal terhubung ke server.', 'error').then(() => location.reload());
         });
     }
 
-    function toggleBranch() { 
-        document.getElementById('branchDiv').style.display = (document.getElementById('roleSelect').value === 'MANAGER') ? 'none' : 'block'; 
+    function forceEndShift() {
+        Swal.fire({
+            title: 'Akhiri Semua Shift?',
+            text: "Karyawan yang belum absen pulang akan di-Clock Out paksa.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#722F37',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Ya, Akhiri Shift!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('/api/end_shift_all', { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.success) {
+                        Swal.fire('Berhasil', data.message, 'success').then(() => location.reload());
+                    } else {
+                        Swal.fire('Gagal', data.error, 'error');
+                    }
+                });
+            }
+        })
+    }
+
+    function kickUser(userId, userName) {
+        Swal.fire({
+            title: 'Hapus Permanen?',
+            html: `Anda yakin ingin memecat/menghapus akun <b>${userName}</b>?<br><br>Data tidak dapat dikembalikan!`,
+            icon: 'error',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Ya, Hapus!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/api/kick_user/${userId}`, { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.success) {
+                        Swal.fire('Terhapus!', data.message, 'success').then(() => location.reload());
+                    } else {
+                        Swal.fire('Gagal', data.error, 'error');
+                    }
+                });
+            }
+        })
     }
 </script>
 {% endblock %}
