@@ -1,0 +1,21 @@
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Database WINE DENTAL (DILARANG KERAS DI-PUSH)
+*.db
+wine_dental.db
+
+# File Uploads (Foto Karyawan)
+static/uploads/presensi/*
+!static/uploads/presensi/.gitkeep
+
+# OS generated files
+.DS_Store
+Thumbs.db

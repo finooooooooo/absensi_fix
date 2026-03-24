@@ -14,7 +14,7 @@ with app.app_context():
     owner = User(
         id="OWN001", 
         username="owner", 
-        full_name="Cia", # Menyesuaikan data otoritas tertinggi
+        full_name="Drg. Patricia M", # Menyesuaikan data otoritas tertinggi
         role="OWNER"
     )
     owner.set_password("owner123")
